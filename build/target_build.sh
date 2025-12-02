@@ -32,9 +32,15 @@ function install_dtree() {(
     if [ ! -d /boot/framos/dtbo ]; then
         sudo -E mkdir -p /boot/framos/dtbo
     fi
+
+    if [ ! -d /boot/arducam/dtbo ]; then
+        sudo -E mkdir -p /boot/arducam/dtbo
+    fi
+
     pushd ${L4T_SOURCE} &> /dev/null
     echo ; echo; echo -e "${yel}device tree install ... ${normal}"
     sudo -E cp kernel-devicetree/generic-dts/dtbs/*fr_*.dtbo /boot/framos/dtbo/.
+    sudo -E cp kernel-devicetree/generic-dts/dtbs/*ar_*.dtbo /boot/arducam/dtbo/.
     popd &> /dev/null
 )}
 

@@ -189,8 +189,8 @@
 									port-index = <1>;
 									bus-width = <2>;
 								};
-								};
-								sensor_csi_ch1_port1: port@1 {
+							};
+							sensor_csi_ch1_port1: port@1 {
 								reg = <1>;
 								status = "disabled";
 								sensor_csi_ch1_out: endpoint@3 {
