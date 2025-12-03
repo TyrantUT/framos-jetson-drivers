@@ -223,7 +223,7 @@ dtbo-y += tegra234-p3737-camera-fr_j7-gmsl-overlay.dtbo
 dtbo-y += tegra234-p3737-camera-fr_j8-gmsl-overlay.dtbo
 
 dtbo-y += tegra234-p3767-camera-p3768-fr_fpa_a_p22-overlay.dtbo
-dtbo-y += tegra234-p3767-camera-p3768-fr_fpa_a_p22_cam1-overlay.dts
+dtbo-y += tegra234-p3767-camera-p3768-fr_fpa_a_p22_cam1-overlay.dtbo
 
 dtbo-y += tegra234-p3767-camera-p3768-fr_imx283-cam1-4lane-overlay.dtbo
 
