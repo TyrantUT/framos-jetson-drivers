@@ -93,9 +93,9 @@
 		__overlay__ {
 			sensor_b: arducam_imx519_a@1a {
 				compatible = "arducam,imx519";
-				reg = <0x1a>
+				reg = <0x1a>;
 
-				devnode = "video0"
+				devnode = "video0";
 
 				physical_w = "3.680";
 				physical_h = "2.760";
