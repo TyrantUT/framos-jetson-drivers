@@ -7,10 +7,6 @@
 /dts-v1/;
 /plugin/;
 
-#define CAM0_PWDN	TEGRA234_MAIN_GPIO(H, 6)
-#define CAM1_PWDN	TEGRA234_MAIN_GPIO(AC, 0)
-#define CAM_I2C_MUX 	TEGRA234_AON_GPIO(CC, 3)
-
 #include <dt-bindings/tegra234-p3767-0000-common.h>
 
 / {
