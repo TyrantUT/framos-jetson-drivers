@@ -306,7 +306,6 @@
 				reg = <0>;
 				#address-cells = <1>;
 				#size-cells = <0>;
-				reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 			};
 
 			/* Channel connected to CAM1 */
