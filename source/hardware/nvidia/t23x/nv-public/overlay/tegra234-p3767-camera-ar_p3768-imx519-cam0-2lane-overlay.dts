@@ -7,6 +7,8 @@
 /dts-v1/;
 /plugin/;
 
+#define CAM0_RST	TEGRA234_MAIN_GPIO(H, 6)
+
 #include <dt-bindings/tegra234-p3767-0000-common.h>
 
 
@@ -19,7 +21,7 @@
 		target = <&sensor_module0>;
 		__overlay__ {
 			status = "okay";
-			badge = "imx519_front_arducam";
+			badge = "jakku_front_arducam";
 			drivernode0 {
 				status = "okay";
 				/* Declare PCL support driver (classically known as guid) */
@@ -88,11 +90,13 @@
 	fragment@8 {
 		target = <&cam_i2cmux_i2c0>;
 		__overlay__ {
+
 			rbpcv2_imx219_a@10 {
 				status = "disabled";
 			};
 
 			sensor_b: arducam_imx519_a@1a {
+				reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 				compatible = "arducam,imx519";
 				reg = <0x1a>;
 				
