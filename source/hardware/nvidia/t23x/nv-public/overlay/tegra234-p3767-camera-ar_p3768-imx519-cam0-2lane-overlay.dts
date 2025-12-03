@@ -20,7 +20,7 @@
 			position = "front";
 			drivernode0 {
 				status = "okay";
-				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/sensor_b@1a"; 
+				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/arducam_imx519_a@1a";
 			};
 		};
 	};
