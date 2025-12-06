@@ -218,7 +218,7 @@
 				};
 
 				sensor_b: arducam_imx519_a@1a {
-					reset-gpios = <&gpio CAM0_PWDN GPIO_ACTIVE_HIGH>;
+					reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 					compatible = "arducam,imx519";
 					/* I2C device address */
 					reg = <0x1a>;
