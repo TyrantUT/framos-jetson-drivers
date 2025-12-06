@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * IMX519 Single Camera Overlay for Framos FPA-A/P22
- * Enables Arducam IMX519 on CAM0 (CSI Channel 1)
+ * Copyright (c) 2024 Framos. All rights reserved.
+ *
+ * tegra234-p3767-camera-p3768-fr_imx900-cam0-2lane-overlay.dts - IMX900 sensor device tree
  */
 
 /dts-v1/;
 /plugin/;
 
+#include <dt-bindings/clock/tegra234-clock.h>
+#include <dt-bindings/gpio/tegra234-gpio.h>
 #include <dt-bindings/tegra234-p3767-0000-common.h>
 
+
 / {
-	overlay-name = "Arducam IMX519 CAM0 - FPA CSI-1";
+	overlay-name = "Arducam IMX519 CAM0 2Lane";
 	jetson-header-name = "Jetson 24pin CSI Connector";
 	compatible = JETSON_COMPATIBLE_P3768;
 
@@ -19,11 +23,12 @@
 		__overlay__ {
 			status = "okay";
 			badge = "jakku_front_arducam";
-			position = "front";
 			drivernode0 {
 				status = "okay";
-				pcl_id = "v4l2_sensor";
-				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/sensor_b@1a"; 
+				/* Declare PCL support driver (classically known as guid) */
+				devname = "imx519 10-001a";
+				/* Declare the device-tree hierarchy to driver instance */
+				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/arducam_imx519_a@1a";
 			};
 		};
 	};
@@ -32,56 +37,71 @@
 		target = <&sensor_vi_port1>;
 		__overlay__ {
 			status = "okay";
-			sensor_vi_in1: endpoint {
-				status = "okay";
-				bus-width = <2>;
-			};
 		};
 	};
 
 	fragment@2 {
+		target = <&sensor_vi_in1>;
+		__overlay__ {
+			status = "okay";
+			bus-width = <2>;
+		};
+	};
+
+	fragment@3 {
 		target = <&sensor_csi_ch1>;
 		__overlay__ {
 			status = "okay";
 			ports {
 				status = "okay";
-				port@0 {
-					status = "okay";
-					sensor_csi_ch1_in: endpoint@2 {
-						status = "okay";
-						bus-width = <2>;
-						remote-endpoint = <&sensor_out_b>; 
-					};
-				};
-				port@1 {
-					status = "okay";
-					sensor_csi_ch1_out: endpoint@3 {
-						status = "okay";
-					};
-				};
 			};
 		};
 	};
 
-	fragment@3 {
+	fragment@4 {
+		target = <&sensor_csi_ch1_port0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5 {
+		target = <&sensor_csi_ch1_in>;
+		__overlay__ {
+			status = "okay";
+			bus-width = <2>;
+			remote-endpoint = <&sensor_out_b>;
+		};
+	};
+
+	fragment@6 {
+		target = <&sensor_csi_ch1_port1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@7 {
+		target = <&sensor_csi_ch1_out>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@8 {
 		target = <&cam_i2cmux_i2c0>;
 		__overlay__ {
-			rbpcv2_imx219_a@10 {
-				status = "disabled";
-			};
-			
-			sensor_b: arducam_imx519_a@1a { 
+			sensor_b: arducam_imx519_a@1a {
 				compatible = "arducam,imx519";
 				reg = <0x1a>;
-				
 				devnode = "video0";
 				physical_w = "3.680";
 				physical_h = "2.760";
 				sensor_model = "imx519";
-				use_sensor_mode_id = "false"; 
-				
-				// --- MODE DEFINITION 0: 4656x3496 ---
-				mode0 {
+
+				use_sensor_mode_id = "false";
+
+				mode0 { /* IMX519_MODE_4656x3496 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -119,9 +139,7 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				
-				// --- MODE DEFINITION 1: 3840x2160 ---
-				mode1 { 
+				mode1 { /* IMX519_MODE_3840x2160 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -159,9 +177,7 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				
-				// --- MODE DEFINITION 2: 1920x1080 ---
-				mode2 { 
+				mode2 { /* IMX519_MODE_1920X1080 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -199,9 +215,7 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				
-				// --- MODE DEFINITION 3: 1280x720 ---
-				mode3 {
+				mode3 { /* IMX519_MODE_1280x720 */
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -239,17 +253,16 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				
 				ports {
 					#address-cells = <1>;
 					#size-cells = <0>;
 					port@0 {
 						reg = <0>;
-						sensor_out_b: endpoint { 
+						sensor_out_b: endpoint {
 							vc-id = <0>;
 							port-index = <1>;
 							bus-width = <2>;
-							remote-endpoint = <&sensor_csi_ch1_in>; 
+							remote-endpoint = <&sensor_csi_ch1_in>;
 						};
 					};
 				};

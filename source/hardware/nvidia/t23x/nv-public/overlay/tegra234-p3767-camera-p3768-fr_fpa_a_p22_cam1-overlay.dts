@@ -177,7 +177,7 @@
 				};
 			};
 			gpio@2200000 {
-				som_gpio_cam0_rst {
+				camera-control-output-low {
 					gpio-hog;
 					output-low;
 					gpios = <CAM0_RST 0>;
