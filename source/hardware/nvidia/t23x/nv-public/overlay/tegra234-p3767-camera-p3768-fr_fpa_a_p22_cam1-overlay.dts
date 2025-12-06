@@ -49,9 +49,8 @@
 						orientation = "1";
 						drivernode0 {
 							status = "okay";
-							pcl_id = "v4l2_sensor';
+							pcl_id = "v4l2_sensor";
 							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/arducam_imx519_a@1a";
-
 						};
 					};
 					sensor_module1: module1 {
