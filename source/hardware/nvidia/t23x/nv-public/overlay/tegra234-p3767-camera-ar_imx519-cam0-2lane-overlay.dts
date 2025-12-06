@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (c) 2024 Framos. All rights reserved.
  *
- * tegra234-p3767-camera-p3768-fr_imx900-cam0-2lane-overlay.dts - IMX900 sensor device tree
+ * tegra234-p3767-camera-ar_imx519-cam0-2lane-overlay.dts - IMX519 sensor device tree
  */
 
 /dts-v1/;
 /plugin/;
 
-#include <dt-bindings/clock/tegra234-clock.h>
 #include <dt-bindings/gpio/tegra234-gpio.h>
 #include <dt-bindings/tegra234-p3767-0000-common.h>
 
+#define CAM0_RST	TEGRA234_MAIN_GPIO(H, 6)
 
 / {
 	overlay-name = "Arducam IMX519 CAM0 2Lane";
@@ -92,6 +91,7 @@
 		target = <&cam_i2cmux_i2c0>;
 		__overlay__ {
 			sensor_b: arducam_imx519_a@1a {
+				reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 				compatible = "arducam,imx519";
 				reg = <0x1a>;
 				devnode = "video0";
