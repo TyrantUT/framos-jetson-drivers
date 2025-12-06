@@ -177,11 +177,11 @@
 				};
 			};
 			gpio@2200000 {
-				camera-control-output-low {
+				som_gpio_cam0_rst {
 					gpio-hog;
 					output-low;
 					gpios = <CAM0_RST 0>;
-					label = "cam0-pwdn";
+					label = "cam1_rst";
 					status = "okay";
 				};
 				som_gpio_cam1_rst {
