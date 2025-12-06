@@ -15,7 +15,6 @@
 
 
 #define CAM_I2C_MUX	TEGRA234_AON_GPIO(CC, 3)
-#define CAM0_RST	TEGRA234_MAIN_GPIO(H, 6)
 #define CAM1_RST	TEGRA234_MAIN_GPIO(AC, 0)
 
 /* TCA6408 Pxx bus-port define*/
@@ -178,11 +177,7 @@
 			};
 			gpio@2200000 {
 				som_gpio_cam0_rst {
-					gpio-hog;
-					output-low;
-					gpios = <CAM0_RST 0>;
-					label = "cam1_rst";
-					status = "okay";
+					status = "disabled";
 				};
 				som_gpio_cam1_rst {
 					gpio-hog;
