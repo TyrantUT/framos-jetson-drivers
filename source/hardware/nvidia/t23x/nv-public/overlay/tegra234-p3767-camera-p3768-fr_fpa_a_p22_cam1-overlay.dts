@@ -270,9 +270,6 @@
 				};
 			};
 			gpio@2200000 {
-				som_gpio_cam0_rst {
-					status = "disabled";
-				};
 				som_gpio_cam1_rst {
 					gpio-hog;
 					output-low;

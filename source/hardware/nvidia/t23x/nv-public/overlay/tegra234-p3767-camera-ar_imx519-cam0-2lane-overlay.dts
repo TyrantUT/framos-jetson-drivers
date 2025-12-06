@@ -17,17 +17,6 @@
 	jetson-header-name = "Jetson 24pin CSI Connector";
 	compatible = JETSON_COMPATIBLE_P3768;
 
-	fragment@0-5 {
-		target-path = "/bus@0/gpio@2200000/som_gpio_cam0_rst";
-		__overlay__ {
-			status = "okay";
-			gpio-hog;
-			output-low;
-			gpios = <CAM0_RST 0>;
-			label = "cam1_rst";
-		};
-	};
-
 	fragment@0 {
 		target = <&sensor_module0>;
 		__overlay__ {
