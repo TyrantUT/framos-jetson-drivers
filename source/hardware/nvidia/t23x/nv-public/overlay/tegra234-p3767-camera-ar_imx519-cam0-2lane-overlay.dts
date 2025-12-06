@@ -52,6 +52,8 @@
 						status = "okay";
 						sensor_csi_ch1_in: endpoint@2 {
 							status = "okay";
+							bus-width = <2>;
+							remote-endpoint = <&sensor_out_b>;
 						};
 					};
 				};
@@ -63,11 +65,11 @@
 		target = <&cam_i2cmux_i2c0>;
 		__overlay__ {
 			status = "okay";
-			reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 
 			sensor_b: arducam_imx519_a@1a {
 				compatible = "arducam,imx519";
 				reg = <0x1a>;
+				reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
 				devnode = "video0";
 				physical_w = "3.680";
 				physical_h = "2.760";
