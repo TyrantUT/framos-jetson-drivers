@@ -1,42 +1,40 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- *
- * tegra234-p3767-camera-ar_imx519-cam0-2lane-overlay.dts - IMX519 sensor device tree
+ * IMX519 Single Camera Overlay for Framos FPA-A/P22
+ * Enables Arducam IMX519 on CAM0 (CSI Channel 1)
  */
 
 /dts-v1/;
 /plugin/;
 
-#define CAM0_RST	TEGRA234_MAIN_GPIO(H, 6)
-
 #include <dt-bindings/tegra234-p3767-0000-common.h>
 
 / {
-	overlay-name = "Arducam IMX519 CAM1 2Lane";
+	overlay-name = "Arducam IMX519 CAM0 - FPA CSI-1";
 	jetson-header-name = "Jetson 24pin CSI Connector";
 	compatible = JETSON_COMPATIBLE_P3768;
-	
-	fragment0 {
-		target = <&sensor_vi_port1>;
+
+	fragment@0 {
+		target = <&sensor_module0>;
 		__overlay__ {
 			status = "okay";
-			sensor_vi_in1: endpoint {
+			badge = "jakku_front_arducam";
+			position = "front";
+			drivernode0 {
 				status = "okay";
-				port-index = <1>;
-				bus-width = <2>;
-				remote-endpoint = <&sensor_csi_ch1_out>;
+				pcl_id = "v4l2_sensor";
+				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/sensor_b@1a"; 
 			};
 		};
 	};
 
 	fragment@1 {
-		target = <&sensor_module0>;
+		target = <&sensor_vi_port1>;
 		__overlay__ {
-			badge = "jakku_front_arducam";
-			drivernode0 {
+			status = "okay";
+			sensor_vi_in1: endpoint {
 				status = "okay";
-				pcl_id = "v4l2_sensor";
-				sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/arducam_imx519_a@1a";
+				bus-width = <2>;
 			};
 		};
 	};
@@ -46,15 +44,19 @@
 		__overlay__ {
 			status = "okay";
 			ports {
+				status = "okay";
 				port@0 {
-					reg = <0>;
-					sensor_csi_ch1_port0: port@0 {
+					status = "okay";
+					sensor_csi_ch1_in: endpoint@2 {
 						status = "okay";
-						sensor_csi_ch1_in: endpoint@2 {
-							status = "okay";
-							bus-width = <2>;
-							remote-endpoint = <&sensor_out_b>;
-						};
+						bus-width = <2>;
+						remote-endpoint = <&sensor_out_b>; 
+					};
+				};
+				port@1 {
+					status = "okay";
+					sensor_csi_ch1_out: endpoint@3 {
+						status = "okay";
 					};
 				};
 			};
@@ -64,20 +66,22 @@
 	fragment@3 {
 		target = <&cam_i2cmux_i2c0>;
 		__overlay__ {
-			status = "okay";
-
-			sensor_b: arducam_imx519_a@1a {
+			rbpcv2_imx219_a@10 {
+				status = "disabled";
+			};
+			
+			sensor_b: arducam_imx519_a@1a { 
 				compatible = "arducam,imx519";
 				reg = <0x1a>;
-				reset-gpios = <&gpio CAM0_RST GPIO_ACTIVE_HIGH>;
+				
 				devnode = "video0";
 				physical_w = "3.680";
 				physical_h = "2.760";
 				sensor_model = "imx519";
-
-				use_sensor_mode_id = "false";
-
-				mode0 { /* IMX519_MODE_4656x3496 */
+				use_sensor_mode_id = "false"; 
+				
+				// --- MODE DEFINITION 0: 4656x3496 ---
+				mode0 {
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -115,7 +119,9 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				mode1 { /* IMX519_MODE_3840x2160 */
+				
+				// --- MODE DEFINITION 1: 3840x2160 ---
+				mode1 { 
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -153,7 +159,9 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				mode2 { /* IMX519_MODE_1920X1080 */
+				
+				// --- MODE DEFINITION 2: 1920x1080 ---
+				mode2 { 
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -191,7 +199,9 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
-				mode3 { /* IMX519_MODE_1280x720 */
+				
+				// --- MODE DEFINITION 3: 1280x720 ---
+				mode3 {
 					mclk_khz = "24000";
 					num_lanes = "2";
 					tegra_sinterface = "serial_b";
@@ -229,20 +239,21 @@
 					default_exp_time = "2495"; /* us */
 					embedded_metadata_height = "2";
 				};
+				
 				ports {
 					#address-cells = <1>;
 					#size-cells = <0>;
 					port@0 {
 						reg = <0>;
-						sensor_out_b: endpoint {
+						sensor_out_b: endpoint { 
+							vc-id = <0>;
 							port-index = <1>;
 							bus-width = <2>;
-							remote-endpoint = <&sensor_csi_ch1_in>;
+							remote-endpoint = <&sensor_csi_ch1_in>; 
 						};
 					};
 				};
 			};
 		};
 	};
-
 };
