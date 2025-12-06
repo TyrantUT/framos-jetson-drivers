@@ -24,7 +24,7 @@
 #define XMASTER		3
 
 / {
-	overlay-name = "Framos FPA-A/P22 (CAM0 enabled)";
+	overlay-name = "Framos FPA-A/P22 (CAM0 enabled + IMX519)";
 	jetson-header-name = "Jetson 24pin CSI Connector";
 	compatible = JETSON_COMPATIBLE_P3768;
 
@@ -44,11 +44,14 @@
 				modules {
 					status = "okay";
 					sensor_module0: module0 {
-						status = "disabled";
+						status = "okay";
 						position = "front";
 						orientation = "1";
 						drivernode0 {
-							status = "disabled";
+							status = "okay";
+							pcl_id = "v4l2_sensor';
+							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/cam_i2cmux/i2c@0/arducam_imx519_a@1a";
+
 						};
 					};
 					sensor_module1: module1 {
@@ -71,8 +74,8 @@
 					status = "okay";
 					sensor_vi_port1: port@1 {
 						reg = <1>;
-						status = "disabled";
-						sensor_vi_in1: endpoint {
+						status = "okay";
+						sensor_vi_in1: okay {
 							status = "disabled";
 							port-index = <1>;
 							bus-width = <2>;
@@ -100,30 +103,31 @@
 		__overlay__ {
 			host1x@13e00000 {
 				nvcsi@15a00000 {
-					num-channels=<4>;
+					num-channels=<2>;
 					#address-cells = <1>;
 					#size-cells = <0>;
 					sensor_csi_ch1: channel@1 {
 						reg = <1>;
-						status = "disabled";
+						status = "okay";
 						ports {
 							#address-cells = <1>;
 							#size-cells = <0>;
-							status = "disabled";
+							status = "okay";
 							sensor_csi_ch1_port0: port@0 {
 								reg = <0>;
-								status = "disabled";
+								status = "okay";
 								sensor_csi_ch1_in: endpoint@2 {
-									status = "disabled";
+									status = "okay";
 									port-index = <1>;
 									bus-width = <2>;
+									remote-endpoint = <&sensor_out_b>;
 								};
 							};
 							sensor_csi_ch1_port1: port@1 {
 								reg = <1>;
-								status = "disabled";
+								status = "okay";
 								sensor_csi_ch1_out: endpoint@3 {
-									status = "disabled";
+									status = "okay";
 									remote-endpoint = <&sensor_vi_in1>;
 								};
 							};
@@ -174,11 +178,11 @@
 				};
 			};
 			gpio@2200000 {
-				som_gpio_cam0_rst {
+				camera-control-output-low {
 					gpio-hog;
 					output-low;
 					gpios = <CAM0_RST 0>;
-					label = "cam0_rst";
+					label = "cam1-pwdn";
 					status = "okay";
 				};
 				som_gpio_cam1_rst {
@@ -205,10 +209,194 @@
 		__overlay__ {
 			/* Channel connected to CAM0 */
 			cam_i2cmux_i2c0: i2c@0 {
-				status = "disabled";
+				status = "okay";
 				reg = <0>;
 				#address-cells = <1>;
 				#size-cells = <0>;
+
+				rbpcv2_imx219_a@10 {
+					status = "disabled";
+				};
+
+				sensor_b: arducam_imx519_a@1a {
+					reset-gpios = <&gpio CAM0_PWDN GPIO_ACTIVE_HIGH>;
+					compatible = "arducam,imx519";
+					/* I2C device address */
+					reg = <0x1a>;
+					/* V4L2 device node location */
+					devnode = "video0";
+					/* Physical dimensions of sensor */
+					physical_w = "3.680";
+					physical_h = "2.760";
+					sensor_model = "imx519";
+					use_sensor_mode_id = "false";
+
+					mode0 { /* IMX519_MODE_4656x3496 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_b";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+						lane_polarity = "6";
+						active_w = "4656";
+						active_h = "3496";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "12650";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "300000000";
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "256"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "9000000"; /* 9.0 fps */
+						step_framerate = "1";
+						default_framerate = "9000000"; /* 9.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+						embedded_metadata_height = "2";
+					};
+					mode1 { /* IMX519_MODE_3840x2160 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_b";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+						lane_polarity = "6";
+						active_w = "3840";
+						active_h = "2160";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "10486";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "300000000";
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "256"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "17000000"; /* 17.0 fps */
+						step_framerate = "1";
+						default_framerate = "17000000"; /* 17.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+						embedded_metadata_height = "2";
+					};
+					mode2 { /* IMX519_MODE_1920X1080 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_b";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+						lane_polarity = "6";
+						active_w = "1920";
+						active_h = "1080";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "6027";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "300000000";
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "256"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "60000000"; /* 60.0 fps */
+						step_framerate = "1";
+						default_framerate = "60000000"; /* 60.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+						embedded_metadata_height = "2";
+					};
+					mode3 { /* IMX519_MODE_1280x720 */
+						mclk_khz = "24000";
+						num_lanes = "2";
+						tegra_sinterface = "serial_b";
+						phy_mode = "DPHY";
+						discontinuous_clk = "no";
+						dpcm_enable = "false";
+						cil_settletime = "0";
+						lane_polarity = "6";
+						active_w = "1280";
+						active_h = "720";
+						mode_type = "bayer";
+						pixel_phase = "rggb";
+						csi_pixel_bit_depth = "10";
+						readout_orientation = "90";
+						line_length = "4336";
+						inherent_gain = "1";
+						mclk_multiplier = "80";
+						pix_clk_hz = "300000000";
+						gain_factor = "16";
+						framerate_factor = "1000000";
+						exposure_factor = "1000000";
+						min_gain_val = "16"; /* 1.00x */
+						max_gain_val = "256"; /* 22x */
+						step_gain_val = "1";
+						default_gain = "16"; /* 1.00x */
+						min_hdr_ratio = "1";
+						max_hdr_ratio = "1";
+						min_framerate = "2000000"; /* 2.0 fps */
+						max_framerate = "120000000"; /* 120.0 fps */
+						step_framerate = "1";
+						default_framerate = "120000000"; /* 120.0 fps */
+						min_exp_time = "13"; /* us */
+						max_exp_time = "683709"; /* us */
+						step_exp_time = "1";
+						default_exp_time = "2495"; /* us */
+						embedded_metadata_height = "2";
+					};
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						port@0 {
+							reg = <0>;
+							sensor_out_b: endpoint {
+								vc-id = <0>;
+								port-index = <1>;
+								bus-width = <2>;
+								remote-endpoint = <&sensor_csi_ch1_in>;
+							};
+						};
+					};
+				};
 			};
 
 			/* Channel connected to CAM1 */
