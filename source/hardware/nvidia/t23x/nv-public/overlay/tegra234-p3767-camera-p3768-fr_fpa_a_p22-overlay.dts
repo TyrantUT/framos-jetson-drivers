@@ -34,7 +34,7 @@
 				compatible = "nvidia, tegra-camera-platform";
 				num_csi_lanes = <8>;
 				max_lane_speed = <2500000>;
-				min_bits_per_pixel = <10>;
+				min_bits_per_pixel = <8>;
 				vi_peak_byte_per_pixel = <2>;
 				vi_bw_margin_pct = <25>;
 				max_pixel_rate = <750000000>;
